@@ -13,12 +13,16 @@ What are closures? We just don't know. But I'm going to try!
 
 As defined in the [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures):
 ```
-Closures are functions that refer to independent (free) variables. In other words, the function defined in the closure ‘remembers’ the environment in which it was created.
+Closures are functions that refer to independent (free) variables.
+ In other words, the function defined in the closure
+‘remembers’ the environment in which it was created.
 ```
 
 In Samer Buna's [What's a Javascript Closure? In Plain English, Please](https://medium.freecodecamp.org/whats-a-javascript-closure-in-plain-english-please-6a1fc1d2ff1c), he states:
 ```
-When you define a function, a closure gets created. Unlike scopes, closures are created when you define a function, not when you execute it. Closures also don’t go away after you execute that function.
+When you define a function, a closure gets created.
+Unlike scopes, closures are created when you define a function,
+not when you execute it. Closures also don’t go away after you execute that function.
 ```
 
 I want to be careful about thinking about declaration and closures, and will detail this momentarily. Put more specifically by [Arindam Paul](https://www.youtube.com/watch?v=QyUFheng6J0): `a closure is an implicit, permanant link between a function and its scope chain.`
@@ -59,6 +63,16 @@ two()
 two()
 // 4
 
+// Why does this illustrate closure?
+// Closure describes everything that two has access to here.
+// What it has access to is both determined by the scope chain of its declaration
+// and the specific execution context created when it was originally invoked.
+// Its scope chain allows it to have access to inc and sum in the parent
+// context.
+// Its execution context has '2' marked as the incrementor in memory, so it
+// will add two with every new invocation of two().
+
+
 // Note that invoking add in a separate context involves a totally separate space in memory.
 const three = add(3)
 three()
@@ -84,6 +98,8 @@ three ()
 // 9
 
 ```
+
+So, to be clear on what the MDN means by reference to "remembering the environemnt where it was created": `Closure describes everything that two has access to here. What it has access to is both determined by the scope chain of its declaration and the specific execution context created when it was originally invoked.`
 
 
 -
