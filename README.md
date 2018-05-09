@@ -5,12 +5,12 @@
 What are closures? We just don't know. But I'm going to try!
 
 ### Inspiration
+- [MDN]([MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures)
 - [Explained By Mailing a Package](https://medium.freecodecamp.org/javascript-closures-explained-by-mailing-a-package-4f23e9885039)
 - [Let's Learn Javascript Closures](https://medium.freecodecamp.org/lets-learn-javascript-closures-66feb44f6a44)
 - [What's a Javascript Closure? In Plain English, Please](https://medium.freecodecamp.org/whats-a-javascript-closure-in-plain-english-please-6a1fc1d2ff1c)
 - [Arindam Paul - JavaScript VM internals, EventLoop, Async and ScopeChains](https://www.youtube.com/watch?v=QyUFheng6J0)
-- [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures)
-- [Angular University: Really Understand Javascript Closures]()
+- [Angular University: Really Understand Javascript Closures](https://blog.angular-university.io/really-understanding-javascript-closures/)
 - [Avoiding New Closures With Let](https://techblog.dotdash.com/avoiding-new-closures-with-let-in-es6-8971aa114488)
 - [ES6 Variable Loops](https://medium.com/front-end-developers/es6-variable-scopes-in-loops-with-closure-9cde7a198744)
 
@@ -210,7 +210,7 @@ const closureVar = function () {
 // Let variables are scoped to the function they are in.
 // In this case, i is scoped within the for loop.
 // Unlike access to parent scope variables, which are by reference,
-// a function has access to variables within its scope as values.
+// a function has access to variables within its own scope as values.
 // Meaning that it can print the current value of i.
 const closureLet = function () {
   for (let i = 0; i < 4; i++) {
