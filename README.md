@@ -220,6 +220,16 @@ const closureLet = function () {
   }
 }
 
+// So what differentiates these two is the scope of the i variable, and how
+// and how closures deal with variables in parent scopes.
+// A function has parent variables by reference, but its own variables by value.
+// So when setTimeout runs with the i variable in scope, it captures the current
+// value of i each time.
+// In contrast, when setTimeout runs with i in a parent scope, it has that
+// variable by reference, so it effectively takes a placeholder, and checks
+// the value of i at the time of execution. By that time, the for loop
+// has run, and the value of i has been updated to four, so that value is printed.
+
 ```
 
 
