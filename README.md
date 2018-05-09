@@ -5,7 +5,7 @@
 What are closures? We just don't know. But I'm going to try!
 
 ### Inspiration
-- [MDN]([MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures)
+- [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures)
 - [Explained By Mailing a Package](https://medium.freecodecamp.org/javascript-closures-explained-by-mailing-a-package-4f23e9885039)
 - [Let's Learn Javascript Closures](https://medium.freecodecamp.org/lets-learn-javascript-closures-66feb44f6a44)
 - [What's a Javascript Closure? In Plain English, Please](https://medium.freecodecamp.org/whats-a-javascript-closure-in-plain-english-please-6a1fc1d2ff1c)
