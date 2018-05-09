@@ -101,5 +101,53 @@ three ()
 
 So, to be clear on what the MDN means by reference to "remembering the environemnt where it was created": `Closure describes everything that two has access to here. What it has access to is both determined by the scope chain of its declaration and the specific execution context created when it was originally invoked.`
 
+## Variable Declarations
 
--
+## Inspiration
+- [Var, Let, Const](http://manojsinghnegi.com/blog/2017/12/10/Var-Let-and-const/)
+
+```js
+for (var i = 0; i < 10; i++) {
+  console.log(i)
+}
+
+// Does i exist, and if so, what is it?
+i
+// It does, and it is 10!
+
+for (let j = 0; j < 10; j++) {
+  console.log(j)
+}
+
+// Does j exist, and if so, what is it?
+j
+// It does not exist!
+
+var x = 1
+// Can you declare again?
+var x = 2
+x
+// It is 2. Dang it!
+
+let y = 1
+// Can you declare again?
+let y = 2
+// You cannot!
+
+
+const z = 1
+// Can you declare gain?
+const z = 2
+// You cannot!
+
+var a = 1
+// Can you declare again?
+let a = 2
+// You cannot, even though you can with var!
+const a = 2
+// You definitely cannot!
+
+```
+
+### What is the difference between var and let and const?
+As stated by Manoj Singh Negi, `var` variables are block scoped, while `let` and `const` are function scoped. The reason that i persists after the for loop is that the relevant 'block' is the *global scope*, while j does **not** persist because its value is restricted to the function block -- within that particular for loop. Let allows reassignment; const does not allow reassignment, but does allow change in value, in the case of mutating an array or object. 
