@@ -76,15 +76,24 @@ two()
 // 4
 
 // Note that this is returning a function that will run after its parent function has already returned. 
+// Why is  this interesting?
+// When two() is invoked, it is running the function  returned within add(), addMe() -- 
+// but that function employs variables declared and resting in the  parent scope, inc and sum. 
+// Those variables do not  move into addMe()'s scope when run;
+// rather, add()'s  variables persist in a specific memory allocation
+// created when it was first invoked when two() was declared,
+// and that memory allocation is connected to a SEPARATE memory allocation
+// for the returned addMe().
 
 // Why does this illustrate closure?
-// Closure describes everything that two has access to here.
+// Closure describes everything that two() has access to here.
 // What it has access to is both determined by the scope chain of its declaration
 // and the specific execution context created when it was originally invoked,
 // where that context  defines what values exist in memory for this particular function.
 // Its scope chain allows it to have access to inc and sum in the parent
 // context.
-// Its execution context has '2' marked as the incrementor in memory, so it
+// Its execution context is  connected to an execution context
+// that has '2' marked as the incrementor in memory, so it
 // will add two with every new invocation of two().
 
 
