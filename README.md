@@ -6,7 +6,7 @@ What are closures? We just don't know. But I'm going to try!
 
 ### Inspiration
 - [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures)
-- [Explained By Mailing a Package](https://medium.freecodecamp.org/javascript-closures-explained-by-mailing-a-package-4f23e9885039)
+- [Javascript Closures Explained By Mailing a Package](https://medium.freecodecamp.org/javascript-closures-explained-by-mailing-a-package-4f23e9885039)
 - [Let's Learn Javascript Closures](https://medium.freecodecamp.org/lets-learn-javascript-closures-66feb44f6a44)
 - [What's a Javascript Closure? In Plain English, Please](https://medium.freecodecamp.org/whats-a-javascript-closure-in-plain-english-please-6a1fc1d2ff1c)
 - [Arindam Paul - JavaScript VM internals, EventLoop, Async and ScopeChains](https://www.youtube.com/watch?v=QyUFheng6J0)
@@ -31,13 +31,13 @@ not when you execute it. Closures also don’t go away after you execute that fu
 I want to be careful about thinking about declaration and closures, and will detail this momentarily. Put more specifically by [Arindam Paul](https://www.youtube.com/watch?v=QyUFheng6J0): `a closure is an implicit, permanant link between a function and its scope chain.`
 
 
-Let's clarify this by noting that scope and closure are related but separate concepts. A scope describes what is contained in a particular block of code; a closure describes what a function has access to. What a function has access is defined through Javascript's Runtime execution, which makes two passes when given javascript code to run: a compilation phase; and an execution phase.
+Let's clarify this by noting that scope and closure are related but separate concepts. A scope describes what is contained in a particular block of code; a closure describes what a function has *access* to. What a function has access is defined through Javascript's Runtime execution, which makes two passes when given javascript code to run: a compilation phase; and an execution phase. These two phases create separate memory allocations for function invocations --  and it's that memory allocation, taken with the scope chain of the function, that determines what variables are 'enclosed' within  a function, and so  constitute its closure. Let me explain this  using Arindam Paul's excellent summary  of Javascript runtime.
 
 #### Compilation Phase versus Execution Phase
 ##### Simple version
 1. Compilation phase: all variable declarations are assigned memory space without yet being assigned value; all function declarations are tested for syntax errors, then stored in memory as strings.
-2. Execution phase: all variables are assigned value. In the event of assignment without prior memory allocation, variable created and then assigned.
-3. If any functions are invoked, immediately enters a local execution context for that function.
+2. Execution phase: all variables are assigned value. In the event of assignment without prior memory allocation, variables are created and then assigned.
+3. If any functions are invoked, immediately enters a local execution context (a memory allocation) for that function.
 4. That execution context goes through a compilation phase using the same previous specifications, then enters an execution phase where variables are assigned and functions are invoked (entering further local execution contexts as necessary).
 5. Garbage collection then determines whether any variables remain reachable in the invoking context.
 6. If yes, those reachable values persist; otherwise, they are scrapped.
@@ -47,12 +47,12 @@ Let's clarify this by noting that scope and closure are related but separate con
 2. If it encounters a function declaration, it checks the function for syntactic errors, then stores that function effectively as a string in memory. Note that if that function includes any further variables or function declarations, it does nothing with them.
 3. It ignores any variable assignments or function executions. *I don't yet know how it handles for or while loops, or even anonymous code blocks.*
 4. Immediately upon reaching the last line of code, **the execution phase** begins. It treats variable declarations as assignment for the variables already allocated memory.
-5. If it encounters *a variable assignment without prior variable declaration*, it checks any parent scopes for that variable, then creates and assigns the value.
+5. If it encounters *a variable assignment without prior variable declaration*, it checks any parent scopes for that variable, then creates and assigns the value within  the global scope if it finds none.
 6. If it encounters a function expression, it creates a *local execution context* for that function.
-7. *Within that local execution context*, it enters a context specific **compilation phase**, so it begins allocating memory to any variable declarations and function declarations, just as before.
-8. Interestingly, this means that any variable declarations after return statements do briefly occupy space in memory when a function is executed, because they are allocated space if still never given a value. They would be garbage collected immediately after execution, with any other unreachable variables.
-9. *When it enters the execution phase within the local execution context*, if it encounters variable reassignment for anything not inside that local context, it follows the scope chain upwards, and reassigns value accordingly *within the first variable definition it encounters*. Thus, if there are variable declarations in multiple successive parent scopes including the global scope, it simply adjusts the value in the nearest scope.
-10. If there is no declared variable matching the variable reassigned, it creates and assigns a variable in the global context. **This feature, and the variable allocation in the compilation phase, explain how variables can be `hoisted` -- and how accidental global variables can be created through errant assignment!**
+7. *Within that local execution context*, it enters a context specific **compilation phase**, so it begins allocating memory to any variable declarations and function declarations within that execution  context, just as before.
+8. Interestingly, this means that any variable declarations after return statements do briefly occupy space in memory when a function is executed, because they are allocated space in the compilation phase if still never given a value. They would be garbage collected immediately after execution, with any other unreachable variables.
+9. *When it enters the execution phase within the local execution context*, if it encounters variable reassignment for anything not inside that local context, it follows the scope chain upwards, and reassigns value accordingly *within the first variable definition it encounters*. Thus, if there are variable declarations using the same name in multiple successive parent scopes going all the way to the global scope, it simply adjusts the value in the nearest scope. 
+10. If a variable isn't declared within a particular execution context,  but there is a reassignment for that variable's value within  that context, then the place that memory stores a variable reassignment would  never  be that specific execution context. It would either be reassigned  within the first parent scope that the variable is declared / allocated memory -- or, if javascript can't find one, it would allocate space in the global scope and assign its value there. **This feature, and the variable allocation in the compilation phase, explain how variables can be `hoisted` -- and how accidental global variables can be created through errant assignment!**
 11. When the execution phase reaches the last line within the invoked function, javascript determines which values remain reachable. If a function returns a single value, everything is garbage collected except that value. If that function returns a function (or operation on variables) which accesses any variables within that function, it preserves that returned function and any variables necessary within that variables scope.
 12. **It will preserve a separate memory space for each separate invocation of a function that contains reachable variables.**
 
@@ -75,10 +75,13 @@ two()
 two()
 // 4
 
+// Note that this is returning a function that will run after its parent function has already returned. 
+
 // Why does this illustrate closure?
 // Closure describes everything that two has access to here.
 // What it has access to is both determined by the scope chain of its declaration
-// and the specific execution context created when it was originally invoked.
+// and the specific execution context created when it was originally invoked,
+// where that context  defines what values exist in memory for this particular function.
 // Its scope chain allows it to have access to inc and sum in the parent
 // context.
 // Its execution context has '2' marked as the incrementor in memory, so it
@@ -98,7 +101,7 @@ const funkyFunction = function (funk) {
   return funk
 }
 
-// When funkyFunction runs, it creates an execution context (funkily, with local variables for two and three), which is immediately discarded after being run.
+// When funkyFunction runs, it creates an execution context (funkily, with local variables for two and three), which is immediately discarded after being run, because no  values remain  reachable after  running.
 funkyFunction(2)
 // Run and discard again.
 funkyFunction(3)
@@ -111,9 +114,12 @@ three ()
 
 ```
 
-So, to be clear on what the MDN means by reference to "remembering the environemnt where it was created": `Closure describes everything that two has access to here. What it has access to is both determined by the scope chain of its declaration and the specific execution context created when it was originally invoked.`
+So, to be clear on what the MDN means by reference to "remembering the environment where it was created": `Closure describes everything that two has access to here. What it has access to is both determined by the scope chain of its declaration and the specific execution context created when it was originally invoked.`
 
-The hard part here is understanding what it means to say that a function has access to variables within its scope chain; that access is by reference.
+The hard part here is understanding what it means to say that a function has access to variables within its scope chain; that access is by reference. As you saw above, javascript doesn't assign memory space within a specific execution  context for  variables that are not declared in that context. So when the  MDN says that closure means that a javascript function is able to remember the environment where it is created, it means  that it is able to remember what variables would have been available in a parent scope to that function. 
+
+So if those variables are employed in a  function invocation -- say, if they are incremented,  as with two() and three() above -- javascript preserves a space in memory that marks the updated values for each of those variables, and each time the function  is run again, it  accesses and updates that particular memory allocation for the variables in question. This particular example isn't as clear in differentiating holding these variables as references versus variables, so consider the asynchronous function below. 
+
 
 
 ```js
@@ -128,8 +134,8 @@ const closureVar = function () {
 // After a tic, prints 4 three times.
 // The asynchronous function, setTimeout, is called when the for loop is done
 // and has access to its parent scope's variables.
-// When the for loop is over, the value of i is for.
-// So it prints the value of i at time of execution.
+// When the for loop is over, the value of i is 4.
+// It prints the value of i at time of the callback function's execution.
 ```
 
 This should be kind of funky to you, but talking about variables should help.
@@ -183,7 +189,7 @@ const a = 2
 ```
 
 ### What is the difference between var and let and const?
-As stated by Manoj Singh Negi, `var` variables are block scoped, while `let` and `const` are function scoped. The reason that i persists after the for loop is that the relevant 'block' is the *global scope*, while j does **not** persist because its value is restricted to the function block -- within that particular for loop. Let allows reassignment; const does not allow reassignment, but does allow change in value, in the case of mutating an array or object.
+As stated by Manoj Singh Negi in [Var, Let, Const](http://manojsinghnegi.com/blog/2017/12/10/Var-Let-and-const/), `var` variables are block scoped, while `let` and `const` are function scoped. The reason that i persists after the for loop is that the relevant 'block' is the *global scope*, while j does **not** persist because its value is restricted to the function block -- within that particular for loop. Let allows reassignment; const does not allow reassignment, but does allow change in value, in the case of mutating an array or object.
 
 ## Variables and Closures!
 
